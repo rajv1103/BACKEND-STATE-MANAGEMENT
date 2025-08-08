@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Game Dashboard</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; background: #1e1e1e; color: #eee; }
+    .game { padding: .5rem; border: 1px solid #444; margin-bottom: .5rem; border-radius: 4px; }
+    .moves { margin-top: .25rem; font-size: .9rem; color: #aaa; }
+  </style>
+</head>
+<body>
+  <h1>🕹️ Live Games</h1>
+  <div id="games"></div>
+
+  <!-- Socket.IO client library -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const container = document.getElementById("games");
+
+    function render(games) {
+      container.innerHTML = games.map(g => `
+        <div class="game">
+          <strong>${g.whitePlayer}</strong> vs <strong>${g.blackPlayer}</strong><br/>
+          <small>ID: ${g.id}</small>
+          <div class="moves">Moves: ${g.moves.join(", ") || "–"}</div>
+        </div>
+      `).join("");
+    }
+
+    socket.on("state", render);
+  </script>
+</body>
+</html>
